@@ -55,6 +55,3 @@ let empty (s: state) : pos list =
     let lst = List.init (height * width) (fun i -> (i % width, i/height))
     lst |> List.except spos
 
-
-
-printfn "hello world"
