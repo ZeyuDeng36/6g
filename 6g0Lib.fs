@@ -29,21 +29,21 @@ let shiftLeft (s:state):state=
     let shift (k:int) (s:state): state=
         let mutable rFin:state= []
         let rec merge (r:state)=
-            if r.IsEmpty <> true then
+            if r.IsEmpty = false then
                 let (headColor, (x,y)) = r.Head
                 let (tailColor, _) = r.Tail.Head
-                if r.Tail.IsEmpty <> true && headColor = fst(r.Tail.Head) then
-                    rFin <- rFin @ [nextColor(headColor),(x,y)]
+                if r.Tail.IsEmpty = false && headColor = tailColor then
+                    rFin <- rFin :: [nextColor(headColor),(x,y)]
                     merge (r.Tail.Tail)
                 else
-                    rFin <- rFin @ [r.Head]
+                    rFin <- rFin :: [r.Head]
                     merge (r.Tail)
         merge (filter k ( List.sortBy (fun (_, (x, _)) -> x) s))
         List.mapi (fun index (v,(x,y)) -> (v,(index, y))) rFin
-    (shift 0 s) @ (shift 1 s) @ (shift 2 s)
+    (shift 0 s) :: (shift 1 s) :: (shift 2 s)
     
 let flipUD (s:state):state=
-    s |> List.map (fun (value ,(x,y)) -> (value ,(2 - x, y)))
+    s |> List.map (fun (value, (x,y)) -> (value ,(2 - x, y)))
     
 let transpose (s:state):state=
     s |> List.map (fun (value, (x,y)) -> (value, (y,x)))
