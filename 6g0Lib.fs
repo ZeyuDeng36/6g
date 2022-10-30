@@ -35,11 +35,11 @@ let shiftLeft (s:state):state=
                     rFin <- rFin @ [nextColor(fst(r.Head)),(fst(snd(r.Head)),snd(snd(r.Head)))]
                     merge (r.Tail.Tail)
                 else
-                    rFin <- rFin :: [r.Head]
+                    rFin <- rFin @ [r.Head]
                     merge (r.Tail)
         merge (filter k ( List.sortBy (fun (_,(x,_)) -> x) s))
         List.mapi (fun index (v,(x,y)) -> (v,(index, y))) rFin
-    (shift 0 s) :: (shift 1 s) :: (shift 2 s)
+    (shift 0 s) @ (shift 1 s) @ (shift 2 s)
     
 let flipLR (s:state):state=
     List.map (fun (v,(x,y)) -> (v,((width-1-x),y))) s
