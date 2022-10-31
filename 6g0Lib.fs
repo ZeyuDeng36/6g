@@ -34,9 +34,9 @@ let empty (s: state) : pos list =
 let rec shiftLeft (s: state) : state =
     let mergedRow: state = List.empty
     let rec merge (s: state) : state = 
-        // try defining elm and rst using try function
         match s with 
-            //compare Value and y-axis of head and next element in list
+            //merge if 
+            //elm is not last elment in list s and elm and next element have the same value and y-axis
             | elm::rst when (List.isEmpty rst = false && fst(elm) = fst(rst.Head) && snd(snd(elm)) = snd(snd(rst.Head))) ->
                 (nextColor(fst(elm)), snd(elm)) :: (merge rst.Tail)
             | elm::rst ->
@@ -81,7 +81,6 @@ let draw (w: int) (h: int) (s: state): canvas =
     C
 
 let react (s: state)(k: key) : state option =
-    printfn "s ======= %A" s
     let mutable sNew: state = []
     match getKey k with
         | LeftArrow -> sNew <- (shiftLeft s)
@@ -90,8 +89,8 @@ let react (s: state)(k: key) : state option =
         | DownArrow -> sNew <-(transpose (flipLR(shiftLeft (flipLR(transpose s)))))
         | _ -> ()
     match sNew with
+        //add new brick if there are empty spaces sNew is not the same as s.
         | elm::rst when (empty sNew).IsEmpty = false && (List.sort s = List.sort sNew) = false ->
-            printfn "%A - %A" s sNew
             sNew <- Option.get(addRandom Red sNew)
             printfn "sNew --- %A" sNew
             Some(sNew)
