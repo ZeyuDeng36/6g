@@ -31,11 +31,9 @@ let empty (s: state) : pos list =
     let lst = List.init (height * width) (fun i -> (i % width, i/height))
     lst |> List.except sPos
 
-
-let rec shiftLEFT (s: state) : state =
+let rec shiftLeft (s: state) : state =
     let mergedRow: state = List.empty
     let rec merge (s: state) : state = 
-        //printfn "merge - %A" (s)
         // try defining elm and rst using try function
         match s with 
             //compare Value and y-axis of head and next element in list
@@ -50,22 +48,15 @@ let rec shiftLEFT (s: state) : state =
     let rec shift (s: state) : state = 
         match s with
             | elm::rst ->
-                let shiftPos = ((empty shiftedRow) |> (List.filter (fun (_,y) -> y = snd(snd(elm))))).Head
-                shiftedRow <- shiftedRow @ [(fst(elm), shiftPos)]
+                let (value, (x,y)) = elm
+                let emptyLst = (empty shiftedRow)
+                let shiftPos = (emptyLst |> (List.filter (fun (_,empy) -> empy = y))).Head
+                
+                shiftedRow <- (shiftedRow @ [(value, shiftPos)])
                 (shift rst)
             | [] ->
                 shiftedRow
-                 
-
-
-
-    shift (merge s)
-
-
-
-
-
-
+    shift (merge (s |> List.sortBy (fun (_, (x, y)) -> y, x)))
 
 
 let flipLR (s: state) : state =
@@ -86,10 +77,11 @@ let addRandom (c:value) (s:state) :state option =
 
 let draw (w: int) (h: int) (s: state): canvas =
     let C: canvas = Canvas.create w h
-    List.iter (fun (v,(x,y)) -> Canvas.setFillBox  C (fromValue v) ((w/width*x),(h/height*y)) ((w/width*(x+1)),(h/height*(y+1)))) s
+    s |> List.iter (fun (v,(x,y)) -> Canvas.setFillBox  C (fromValue v) ((w/width*x),(h/height*y)) ((w/width*(x+1)),(h/height*(y+1))))
     C
 
 let react (s: state)(k: key) : state option =
+    printfn "s ======= %A" s
     let mutable sNew: state = []
     match getKey k with
         | LeftArrow -> sNew <- (shiftLeft s)
@@ -97,7 +89,13 @@ let react (s: state)(k: key) : state option =
         | UpArrow -> sNew <-(transpose (shiftLeft (transpose s)))
         | DownArrow -> sNew <-(transpose (flipLR(shiftLeft (flipLR(transpose s)))))
         | _ -> ()
-    if (empty sNew) <> [] then   
-        sNew <- Option.get(addRandom Red sNew)
-        printfn "%A" sNew
-    Some(sNew)
+    match sNew with
+        | elm::rst when (empty sNew).IsEmpty = false && (List.sort s = List.sort sNew) = false ->
+            printfn "%A - %A" s sNew
+            sNew <- Option.get(addRandom Red sNew)
+            printfn "sNew --- %A" sNew
+            Some(sNew)
+        | _ -> 
+            Some(s)
+
+        
