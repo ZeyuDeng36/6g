@@ -8,10 +8,10 @@ type state = piece list
 val fromValue: v:value -> Canvas.color
 val nextColor : c : value -> value
 val filter : k : int -> s : state -> state
+val empty : s : state -> pos list
 val shiftLeft : s : state -> state
 val flipLR : s : state -> state
 val transpose : s : state -> state
-val empty : s : state -> pos list
 val addRandom : c : value -> s : state -> state option
 
 val draw: w: int -> h: int -> s: state -> unit

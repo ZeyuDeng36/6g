@@ -3,7 +3,6 @@
 
 open Canvas
 open Solitaire
-open System
 
 let height:int = 3
 let width:int = 3
