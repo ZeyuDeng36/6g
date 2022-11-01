@@ -7,6 +7,8 @@ type state = piece list
 let height: int = 3
 let width: int = 3
 
+//hullu bullu
+
 /// <summary>gets the canvas colour from a value</summary>
 /// <param name = "v"> value </param>
 /// <returns> coresponding value in canvas color </returns>
