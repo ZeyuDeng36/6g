@@ -8,8 +8,6 @@ type state = piece list
 let height: int = 3
 let width: int = 3
 
-//hullu bullu
-
 
 let fromValue (v: value) : Canvas.color =
     match v with
