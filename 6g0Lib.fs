@@ -88,7 +88,6 @@ let addRandom (c:value) (s:state) :state option =
         Some (s @ [(c,(List.item i emptyPositions))])
 
 
-/// <returns>Canvas with boxes</returns>
 let draw (w: int) (h: int) (s: state): canvas =
     let C: canvas = Canvas.create w h
     s |> List.iter (fun (v,(x,y)) -> Canvas.setFillBox  C (fromValue v) ((w/width*x),(h/height*y)) ((w/width*(x+1)),(h/height*(y+1))))
